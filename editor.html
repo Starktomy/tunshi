@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>吞食天地 存档编辑器</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Microsoft YaHei', 'SimHei', sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; }
+.container { max-width: 900px; margin: 0 auto; padding: 20px; }
+h1 { text-align: center; color: #e94560; margin-bottom: 20px; }
+.panel { background: #16213e; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+.panel h2 { color: #0f3460; margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid #0f3460; padding-bottom: 8px; }
+.info { background: #0f3460; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 13px; }
+.info span { color: #e94560; }
+.row { display: flex; align-items: center; margin-bottom: 10px; gap: 10px; }
+.row label { width: 120px; color: #aaa; font-size: 14px; flex-shrink: 0; }
+.row input, .row select { flex: 1; padding: 8px 12px; border: 1px solid #0f3460; border-radius: 6px; background: #1a1a2e; color: #eee; font-size: 14px; }
+.row input:focus, .row select:focus { outline: none; border-color: #e94560; }
+.btn-row { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+button { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-family: inherit; transition: opacity 0.2s; }
+button:hover { opacity: 0.85; }
+.btn-primary { background: #e94560; color: #fff; }
+.btn-secondary { background: #0f3460; color: #fff; }
+.btn-danger { background: #533; color: #fff; }
+.btn-export { background: #235; color: #fff; }
+.msg { padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 13px; display: none; }
+.msg.success { background: #143; color: #4f8; display: block; }
+.msg.error { background: #431; color: #f84; display: block; }
+.actor-card { background: #0f3460; border-radius: 8px; padding: 15px; margin-bottom: 12px; }
+.actor-card h3 { color: #e94560; margin-bottom: 10px; font-size: 15px; }
+.actor-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+.stat { display: flex; align-items: center; gap: 8px; }
+.stat label { width: 70px; color: #aaa; font-size: 13px; }
+.stat input { flex: 1; padding: 6px 10px; border: 1px solid #1a1a2e; border-radius: 4px; background: #1a1a2e; color: #eee; font-size: 13px; }
+.item-list { max-height: 200px; overflow-y: auto; }
+.item { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid #0f3460; font-size: 13px; }
+.item input[type="number"] { width: 70px; padding: 4px 8px; border: 1px solid #1a1a2e; border-radius: 4px; background: #1a1a2e; color: #eee; }
+.var-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid #0f3460; font-size: 13px; }
+.var-row label { width: 100px; color: #4f8; }
+.var-row input { flex: 1; padding: 6px 10px; border: 1px solid #1a1a2e; border-radius: 4px; background: #1a1a2e; color: #eee; }
+.tab-bar { display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; }
+.tab { padding: 8px 16px; background: #0f3460; border: none; border-radius: 6px 6px 0 0; cursor: pointer; color: #aaa; font-size: 13px; font-family: inherit; }
+.tab.active { background: #e94560; color: #fff; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.no-data { color: #666; font-size: 13px; text-align: center; padding: 30px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>吞食天地 存档编辑器</h1>
+
+  <div class="panel">
+    <h2>存档选择</h2>
+    <div class="row">
+      <label>存档槽位:</label>
+      <select id="slotSelect">
+        <option value="1">存档 1</option>
+        <option value="2">存档 2</option>
+        <option value="3">存档 3</option>
+        <option value="4">存档 4</option>
+        <option value="5">存档 5</option>
+        <option value="6">存档 6</option>
+        <option value="7">存档 7</option>
+        <option value="8">存档 8</option>
+        <option value="9">存档 9</option>
+      </select>
+    </div>
+    <div class="row">
+      <label>存档信息:</label>
+      <input id="saveInfo" type="text" readonly placeholder="选择存档后显示信息">
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="loadSave()">读取存档</button>
+      <button class="btn-secondary" onclick="saveSave()">保存存档</button>
+      <button class="btn-danger" onclick="clearSave()">清空存档</button>
+      <button class="btn-secondary" onclick="exportSave()">导出存档</button>
+      <button class="btn-secondary" onclick="importSave()">导入存档</button>
+      <input type="file" id="importFile" accept=".json,.sav" style="display:none" onchange="handleImportFile(event)">
+    </div>
+    <div id="msg" class="msg"></div>
+  </div>
+
+  <div id="editorPanel" class="panel" style="display:none">
+    <h2>存档编辑</h2>
+
+    <div class="tab-bar">
+      <button class="tab active" onclick="showTab('party')">队伍/金钱</button>
+      <button class="tab" onclick="showTab('actors')">角色属性</button>
+      <button class="tab" onclick="showTab('items')">背包物品</button>
+      <button class="tab" onclick="showTab('vars')">游戏变量</button>
+    </div>
+
+    <div id="tab-party" class="tab-content active">
+      <div class="row">
+        <label>金钱 (Gold):</label>
+        <input id="gold" type="number" min="0" max="999999999" placeholder="金钱">
+      </div>
+      <div class="row">
+        <label>游戏时长 (帧):</label>
+        <input id="playtime" type="text" placeholder="HH:MM:SS 格式">
+      </div>
+      <div class="row">
+        <label>存档时间戳:</label>
+        <input id="timestamp" type="number" readonly placeholder="时间戳">
+      </div>
+      <div class="row">
+        <label>游戏版本:</label>
+        <input id="versionId" type="text" readonly placeholder="版本">
+      </div>
+    </div>
+
+    <div id="tab-actors" class="tab-content">
+      <div id="actorsList"></div>
+    </div>
+
+    <div id="tab-items" class="tab-content">
+      <div id="itemsList"></div>
+    </div>
+
+    <div id="tab-vars" class="tab-content">
+      <div id="varsList"></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/libs/lz-string.js"></script>
+<script>
+// Game data (loaded from data/ folder)
+let gameData = { Items: [], Weapons: [], Armors: [], Actors: [] };
+
+async function loadGameData() {
+  const files = [
+    { key: 'Items', src: 'data/Items.json' },
+    { key: 'Weapons', src: 'data/Weapons.json' },
+    { key: 'Armors', src: 'data/Armors.json' },
+    { key: 'Actors', src: 'data/Actors.json' }
+  ];
+  for (const f of files) {
+    try {
+      const resp = await fetch(f.src);
+      const json = await resp.json();
+      gameData[f.key] = json;
+    } catch (e) {
+      console.warn('Failed to load ' + f.src, e);
+    }
+  }
+}
+
+function getItemName(type, id) {
+  const data = gameData[type];
+  if (!data || !data[id]) return 'ID:' + id;
+  return data[id].name || 'ID:' + id;
+}
+
+// localStorage key names - game uses Chinese format
+const GLOBAL_KEY = 'RPG 吞食天地 Global';
+const FILE_KEY = (n) => 'RPG 吞食天地 File' + n;
+
+function getFromStorage(key) {
+  return localStorage.getItem(key);
+}
+
+let currentSave = null;
+let currentSlot = 1;
+
+// Init
+loadGameData();
+
+function showMsg(text, type) {
+  const el = document.getElementById('msg');
+  el.textContent = text;
+  el.className = 'msg ' + type;
+  setTimeout(() => { el.className = 'msg'; }, 4000);
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector('.tab[onclick="showTab(\'' + name + '\')"]').classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function getGlobalInfo() {
+  try {
+    const raw = localStorage.getItem(GLOBAL_KEY);
+    if (!raw) return null;
+    const data = LZString.decompressFromBase64(raw);
+    if (data) return JSON.parse(data);
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function loadSave() {
+  currentSlot = parseInt(document.getElementById('slotSelect').value);
+  const info = getGlobalInfo();
+  let infoText = '存档 ' + currentSlot;
+  if (info && info[currentSlot]) {
+    const s = info[currentSlot];
+    infoText += ' | ' + new Date(s.timestamp).toLocaleString() + ' | ' + (s.playtime || '?');
+    if (s.title) infoText += ' | ' + s.title;
+  }
+  document.getElementById('saveInfo').value = infoText;
+
+  try {
+    const raw = getFromStorage(FILE_KEY(currentSlot));
+    if (!raw) { showMsg('该存档槽位为空', 'error'); document.getElementById('editorPanel').style.display = 'none'; return; }
+    const data = LZString.decompressFromBase64(raw);
+    currentSave = JSON.parse(data);
+    populateEditor();
+    document.getElementById('editorPanel').style.display = 'block';
+    showMsg('读取成功', 'success');
+  } catch (e) {
+    showMsg('读取失败: ' + e.message, 'error');
+    document.getElementById('editorPanel').style.display = 'none';
+  }
+}
+
+function saveSave() {
+  if (!currentSave) { showMsg('请先读取存档', 'error'); return; }
+
+  // Collect edited values - gold is stored as _gold in RMMV save format
+  if (currentSave.party) {
+    currentSave.party._gold = Math.max(0, Math.min(99999999, parseInt(document.getElementById('gold').value) || 0));
+  }
+
+  // Actors - stored in actors._data which is an object keyed by actorId (index), not array
+  if (currentSave.actors && currentSave.actors._data) {
+    const actorArray = currentSave.actors._data['@a'];
+    if (actorArray) {
+      actorArray.forEach((actor, idx) => {
+        if (!actor || typeof actor !== 'object') return;
+        const hp = document.getElementById('actor_hp_' + idx);
+        const mp = document.getElementById('actor_mp_' + idx);
+        const atk = document.getElementById('actor_atk_' + idx);
+        const def = document.getElementById('actor_def_' + idx);
+        const mat = document.getElementById('actor_mat_' + idx);
+        const mdf = document.getElementById('actor_mdf_' + idx);
+        const agi = document.getElementById('actor_agi_' + idx);
+        const luk = document.getElementById('actor_luk_' + idx);
+        const level = document.getElementById('actor_level_' + idx);
+        if (hp) actor._hp = Math.max(0, parseInt(hp.value) || 0);
+        if (mp) actor._mp = Math.max(0, parseInt(mp.value) || 0);
+        if (actor._paramPlus && actor._paramPlus['@a']) {
+          if (atk) actor._paramPlus['@a'][2] = Math.max(0, parseInt(atk.value) || 0);
+          if (def) actor._paramPlus['@a'][3] = Math.max(0, parseInt(def.value) || 0);
+          if (mat) actor._paramPlus['@a'][4] = Math.max(0, parseInt(mat.value) || 0);
+          if (mdf) actor._paramPlus['@a'][5] = Math.max(0, parseInt(mdf.value) || 0);
+          if (agi) actor._paramPlus['@a'][6] = Math.max(0, parseInt(agi.value) || 0);
+          if (luk) actor._paramPlus['@a'][7] = Math.max(0, parseInt(luk.value) || 0);
+        }
+        if (level) {
+          actor._level = Math.max(1, Math.min(99, parseInt(level.value) || 1));
+        }
+      });
+    }
+  }
+
+  // Items - RMMV format: {"1":1,"2":1,"9":1,"@c":12409} - keys are item IDs, values are quantities
+  if (currentSave.party) {
+    const sections = [
+      { key: '_items', id: 'item' },
+      { key: '_weapons', id: 'weap' },
+      { key: '_armors', id: 'armor' }
+    ];
+    sections.forEach(section => {
+      const container = currentSave.party[section.key];
+      if (!container) return;
+      // Get all item IDs (non-@c keys) in order
+      const itemIds = Object.keys(container).filter(k => k !== '@c');
+      itemIds.forEach((itemId, idx) => {
+        const numInput = document.getElementById(section.id + '_num_' + idx);
+        if (numInput) {
+          const newNum = parseInt(numInput.value) || 0;
+          container[itemId] = newNum;
+          // Remove key if quantity is 0
+          if (newNum === 0) {
+            delete container[itemId];
+          }
+        }
+      });
+    });
+  }
+
+  // Variables - stored as _data array
+  if (currentSave.variables && currentSave.variables._data && currentSave.variables._data['@a']) {
+    const varArray = currentSave.variables._data['@a'];
+    varArray.forEach((val, idx) => {
+      const input = document.getElementById('var_' + idx);
+      if (input) {
+        const parsed = parseInt(input.value);
+        varArray[idx] = isNaN(parsed) ? 0 : parsed;
+      }
+    });
+  }
+
+  try {
+    const json = JSON.stringify(currentSave);
+    const compressed = LZString.compressToBase64(json);
+    localStorage.setItem(FILE_KEY(currentSlot), compressed);
+    showMsg('保存成功!', 'success');
+  } catch (e) {
+    showMsg('保存失败: ' + e.message, 'error');
+  }
+}
+
+function clearSave() {
+  if (!confirm('确定要清空存档 ' + currentSlot + ' 吗？此操作不可恢复！')) return;
+  try {
+    localStorage.removeItem(FILE_KEY(currentSlot));
+    const info = getGlobalInfo();
+    if (info) {
+      delete info[currentSlot];
+      localStorage.setItem(GLOBAL_KEY, LZString.compressToBase64(JSON.stringify(info)));
+    }
+    currentSave = null;
+    document.getElementById('editorPanel').style.display = 'none';
+    document.getElementById('saveInfo').value = '已清空';
+    showMsg('存档已清空', 'success');
+  } catch (e) {
+    showMsg('清空失败: ' + e.message, 'error');
+  }
+}
+
+// Export save to file
+function exportSave() {
+  if (!currentSave) { showMsg('请先读取存档', 'error'); return; }
+
+  // Collect edited values first
+  saveSave();
+
+  try {
+    // Get global info for this slot
+    const info = getGlobalInfo();
+    const slotInfo = info && info[currentSlot] ? info[currentSlot] : null;
+
+    // Create export package
+    const exportData = {
+      version: 1,
+      slot: currentSlot,
+      timestamp: Date.now(),
+      info: slotInfo,
+      save: currentSave
+    };
+
+    const json = JSON.stringify(exportData);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'sanguo_save_' + currentSlot + '_' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showMsg('导出成功: ' + a.download, 'success');
+  } catch (e) {
+    showMsg('导出失败: ' + e.message, 'error');
+  }
+}
+
+// Import save from file
+function importSave() {
+  document.getElementById('importFile').click();
+}
+
+function handleImportFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const importData = JSON.parse(e.target.result);
+
+      // Validate import data
+      if (!importData.save || !importData.info) {
+        showMsg('无效的存档文件', 'error');
+        return;
+      }
+
+      currentSave = importData.save;
+      currentSlot = importData.slot || currentSlot;
+      document.getElementById('slotSelect').value = currentSlot;
+
+      // Save to localStorage
+      const compressed = LZString.compressToBase64(JSON.stringify(currentSave));
+      localStorage.setItem(FILE_KEY(currentSlot), compressed);
+
+      // Update global info
+      const info = getGlobalInfo() || {};
+      info[currentSlot] = importData.info;
+      localStorage.setItem(GLOBAL_KEY, LZString.compressToBase64(JSON.stringify(info)));
+
+      populateEditor();
+      document.getElementById('editorPanel').style.display = 'block';
+
+      const infoText = '存档 ' + currentSlot + ' | ' + new Date(importData.info.timestamp).toLocaleString();
+      document.getElementById('saveInfo').value = infoText;
+
+      showMsg('导入成功!', 'success');
+    } catch (err) {
+      showMsg('导入失败: ' + err.message, 'error');
+    }
+  };
+  reader.onerror = function() {
+    showMsg('文件读取失败', 'error');
+  };
+  reader.readAsText(file);
+
+  // Reset file input
+  event.target.value = '';
+}
+
+function populateEditor() {
+  if (!currentSave) return;
+
+  // Party / Gold - RMMV stores gold as _gold property
+  document.getElementById('gold').value = currentSave.party ? (currentSave.party._gold || 0) : 0;
+
+  const info = getGlobalInfo();
+  if (info && info[currentSlot]) {
+    document.getElementById('timestamp').value = info[currentSlot].timestamp || 0;
+    document.getElementById('playtime').value = info[currentSlot].playtime || 0;
+    document.getElementById('versionId').value = info[currentSlot].globalId || '';
+  }
+
+  // Actors
+  renderActors();
+
+  // Items
+  renderItems();
+
+  // Variables
+  renderVars();
+}
+
+function renderActors() {
+  const container = document.getElementById('actorsList');
+  container.innerHTML = '';
+  if (!currentSave.actors || !currentSave.actors._data || !currentSave.actors._data['@a']) {
+    container.innerHTML = '<div class="no-data">无角色数据</div>'; return;
+  }
+  const actorArray = currentSave.actors._data['@a'];
+  actorArray.forEach((actor, idx) => {
+    if (!actor || typeof actor !== 'object') return;
+    const name = actor._name || ('Actor ' + actor._actorId);
+    const level = actor._level || 1;
+    const hp = actor._hp || 0;
+    const mp = actor._mp || 0;
+    // paramPlus is stored as {"@c":...,"@a":[0,0,atk,def,mat,mdf,agi,luk,...]} - indices 2-7
+    const paramPlusArr = actor._paramPlus && actor._paramPlus['@a'] ? actor._paramPlus['@a'] : [];
+    const atk = paramPlusArr[2] || 0;
+    const def = paramPlusArr[3] || 0;
+    const mat = paramPlusArr[4] || 0;
+    const mdf = paramPlusArr[5] || 0;
+    const agi = paramPlusArr[6] || 0;
+    const luk = paramPlusArr[7] || 0;
+
+    const div = document.createElement('div');
+    div.className = 'actor-card';
+    div.innerHTML = `
+      <h3>${name} (ID: ${actor._actorId} | 等级: ${level})</h3>
+      <div class="actor-stats">
+        <div class="stat"><label>HP:</label><input id="actor_hp_${idx}" type="number" value="${hp}" min="0"></div>
+        <div class="stat"><label>MP:</label><input id="actor_mp_${idx}" type="number" value="${mp}" min="0"></div>
+        <div class="stat"><label>等级:</label><input id="actor_level_${idx}" type="number" value="${level}" min="1" max="99"></div>
+        <div class="stat"><label>ATK:</label><input id="actor_atk_${idx}" type="number" value="${atk}" min="0"></div>
+        <div class="stat"><label>DEF:</label><input id="actor_def_${idx}" type="number" value="${def}" min="0"></div>
+        <div class="stat"><label>MAT:</label><input id="actor_mat_${idx}" type="number" value="${mat}" min="0"></div>
+        <div class="stat"><label>MDF:</label><input id="actor_mdf_${idx}" type="number" value="${mdf}" min="0"></div>
+        <div class="stat"><label>AGI:</label><input id="actor_agi_${idx}" type="number" value="${agi}" min="0"></div>
+        <div class="stat"><label>LUK:</label><input id="actor_luk_${idx}" type="number" value="${luk}" min="0"></div>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function renderItems() {
+  const container = document.getElementById('itemsList');
+  container.innerHTML = '';
+
+  const sections = [
+    { key: '_items', dataType: 'Items', title: '道具', id: 'item' },
+    { key: '_weapons', dataType: 'Weapons', title: '武器', id: 'weap' },
+    { key: '_armors', dataType: 'Armors', title: '防具', id: 'armor' }
+  ];
+
+  sections.forEach(section => {
+    if (!currentSave.party || !currentSave.party[section.key]) return;
+    const itemsContainer = currentSave.party[section.key];
+    // RMMV format: {"1":1,"2":1,"9":1,"@c":12409} - keys are item IDs, values are quantities
+    // "@c" is class ID, skip it
+    const itemIds = Object.keys(itemsContainer).filter(k => k !== '@c');
+    if (itemIds.length === 0) return;
+
+    const heading = document.createElement('h3');
+    heading.style.cssText = 'color:#e94560;font-size:14px;margin:10px 0 5px';
+    heading.textContent = section.title + ' (' + itemIds.length + ')';
+    container.appendChild(heading);
+
+    const list = document.createElement('div');
+    list.className = 'item-list';
+    itemIds.forEach((itemId, idx) => {
+      const id = parseInt(itemId);
+      const num = itemsContainer[itemId] || 0;
+      const name = getItemName(section.dataType, id);
+
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = `<span style="flex:1">${name}</span>
+        <input id="${section.id}_num_${idx}" type="number" value="${num}" min="0" style="width:70px">
+        <button onclick="this.parentElement.querySelector('input').value=0" style="padding:4px 10px;background:#533;border:none;border-radius:4px;cursor:pointer;color:#fff;font-size:12px">清零</button>`;
+      list.appendChild(div);
+    });
+    container.appendChild(list);
+  });
+
+  if (container.children.length === 0) {
+    container.innerHTML = '<div class="no-data">无物品数据</div>';
+  }
+}
+
+function renderVars() {
+  const container = document.getElementById('varsList');
+  container.innerHTML = '';
+  // RMMV variables serialized as: {"@c":80,"@a":[null,null,...,999999,...]}
+  if (!currentSave.variables || !currentSave.variables._data || !currentSave.variables._data['@a']) {
+    container.innerHTML = '<div class="no-data">无变量数据</div>'; return;
+  }
+
+  // Show first 100 non-zero variables
+  const data = currentSave.variables._data['@a'];
+  let shown = 0;
+  data.forEach((val, idx) => {
+    if (val !== 0 && val !== null && shown < 100) {
+      const div = document.createElement('div');
+      div.className = 'var-row';
+      div.innerHTML = `<label>变量 ${idx}:</label>
+        <input id="var_${idx}" type="number" value="${val}">`;
+      container.appendChild(div);
+      shown++;
+    }
+  });
+
+  if (shown === 0) {
+    container.innerHTML = '<div class="no-data">所有变量均为0</div>';
+  }
+}
+</script>
+</body>
+</html>

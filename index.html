@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="viewport" content="user-scalable=no">
+        <link rel="icon" href="icon/icon.png" type="image/png">
+        <link rel="apple-touch-icon" href="icon/icon.png">
+        <link rel="stylesheet" type="text/css" href="fonts/gamefont.css">
+        <title>吞食天地</title>
+		<style>
+			#hello2 {color:red;position:fixed;right:1%;top:0; z-index:999999; background:#FFF; color:#ff0000; padding:.5%;}
+		</style>
+    </head>
+	<body style="background-color: black">
+	<div id="hello">直播间底部小手柄下载游戏</div>
+	<script>
+	// 离线模式 - 添加默认参数
+	(function() {
+		if (!location.search.includes('u=')) {
+			var sep = location.pathname.includes('?') ? '&' : '?';
+			location.replace(location.pathname + '?u=offline&isroot=OK');
+		}
+	})();
+	</script>
+	<script type="text/javascript" src="js/plugins/jquery.js"></script>
+	<script type="text/javascript" src="js/libs/pixi.js"></script>
+	<script type="text/javascript" src="js/libs/pixi-tilemap.js"></script>
+	<script type="text/javascript" src="js/libs/pixi-picture.js"></script>
+	<script type="text/javascript" src="js/libs/fpsmeter.js"></script>
+	<script type="text/javascript" src="js/libs/lz-string.js"></script>
+	<script type="text/javascript" src="js/libs/iphone-inline-video.browser.js"></script>
+	<script type="text/javascript" src="js/rpg_core.js?v=d"></script>
+	<script type="text/javascript" src="js/rpg_managers.js?v=123"></script>
+	<script type="text/javascript" src="js/rpg_objects.js"></script>
+	<script type="text/javascript" src="js/rpg_scenes.js"></script>
+	<script type="text/javascript" src="js/rpg_sprites.js?v=a1"></script>
+	<script type="text/javascript" src="js/rpg_windows.js"></script>
+	<script type="text/javascript" src="js/plugins.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+	</body>
+</html>
