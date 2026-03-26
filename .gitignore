@@ -8,6 +8,10 @@
 !fonts/**/*
 !js/
 !js/**/*
+!audio/
+!audio/**/*
+!img/
+!img/**/*
 !editor.html
 !index.html
 
