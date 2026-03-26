@@ -1,12 +1,15 @@
 # Ignore everything by default
 *
 
-# But not these files/directories
+# But not these files/directories (need ** for files inside directories)
 !data/
+!data/**/*
 !fonts/
+!fonts/**/*
 !js/
+!js/**/*
 !editor.html
 !index.html
 
-# Also keep these if they exist at root
+# Also keep gitignore
 !.gitignore
