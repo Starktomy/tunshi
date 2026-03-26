@@ -44,6 +44,13 @@ button:hover { opacity: 0.85; }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 .no-data { color: #666; font-size: 13px; text-align: center; padding: 30px; }
+.party-list, .available-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.party-member { background: #e94560; color: #fff; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.party-member:hover { background: #c33; }
+.party-member .remove { background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 3px; }
+.available-member { background: #0f3460; color: #aaa; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.available-member:hover { background: #1a4a80; color: #fff; }
+.party-section h3 { margin-bottom: 10px; }
 </style>
 </head>
 <body>
@@ -108,6 +115,15 @@ button:hover { opacity: 0.85; }
         <label>游戏版本:</label>
         <input id="versionId" type="text" readonly placeholder="版本">
       </div>
+
+      <div class="party-section" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #0f3460;">
+        <h3 style="color: #e94560; margin-bottom: 10px;">武将队列管理</h3>
+        <p style="color: #888; font-size: 12px; margin-bottom: 10px;">当前队伍 (点击移除)：</p>
+        <div id="partyMembers" class="party-list"></div>
+
+        <p style="color: #888; font-size: 12px; margin: 15px 0 10px;">可添加的武将：</p>
+        <div id="availableActors" class="available-list"></div>
+      </div>
     </div>
 
     <div id="tab-actors" class="tab-content">
@@ -128,6 +144,7 @@ button:hover { opacity: 0.85; }
 <script>
 // Game data (loaded from data/ folder)
 let gameData = { Items: [], Weapons: [], Armors: [], Actors: [] };
+let allActorsList = []; // All actors from Actors.json
 
 async function loadGameData() {
   const files = [
@@ -141,6 +158,15 @@ async function loadGameData() {
       const resp = await fetch(f.src);
       const json = await resp.json();
       gameData[f.key] = json;
+      if (f.key === 'Actors') {
+        // Build actor list from Actors.json
+        allActorsList = [];
+        for (let i = 1; i < json.length; i++) {
+          if (json[i]) {
+            allActorsList.push({ id: json[i].id, name: json[i].name });
+          }
+        }
+      }
     } catch (e) {
       console.warn('Failed to load ' + f.src, e);
     }
@@ -151,6 +177,76 @@ function getItemName(type, id) {
   const data = gameData[type];
   if (!data || !data[id]) return 'ID:' + id;
   return data[id].name || 'ID:' + id;
+}
+
+// Party management
+function getPartyActorIds() {
+  if (!currentSave || !currentSave.party) return [];
+  // RMMV party actors are stored in party._actors as array of actor IDs
+  return currentSave.party._actors || [];
+}
+
+function setPartyActorIds(actorIds) {
+  if (!currentSave || !currentSave.party) return;
+  currentSave.party._actors = actorIds;
+}
+
+function getActorName(actorId) {
+  const actor = allActorsList.find(a => a.id === actorId);
+  return actor ? actor.name : '武将' + actorId;
+}
+
+function renderPartyUI() {
+  const partyContainer = document.getElementById('partyMembers');
+  const availableContainer = document.getElementById('availableActors');
+  if (!partyContainer || !availableContainer) return;
+
+  const partyIds = getPartyActorIds();
+
+  // Render current party members
+  partyContainer.innerHTML = '';
+  partyIds.forEach((actorId, idx) => {
+    const div = document.createElement('div');
+    div.className = 'party-member';
+    div.innerHTML = `<span>${getActorName(actorId)}</span><span class="remove" onclick="removeFromParty(${actorId})">×</span>`;
+    partyContainer.appendChild(div);
+  });
+
+  // Render available actors (not in party)
+  availableContainer.innerHTML = '';
+  allActorsList.forEach(actor => {
+    if (!partyIds.includes(actor.id)) {
+      const div = document.createElement('div');
+      div.className = 'available-member';
+      div.textContent = actor.name;
+      div.onclick = () => addToParty(actor.id);
+      availableContainer.appendChild(div);
+    }
+  });
+}
+
+function addToParty(actorId) {
+  const partyIds = getPartyActorIds();
+  if (partyIds.length >= 4) {
+    showMsg('队伍最多4人', 'error');
+    return;
+  }
+  if (partyIds.includes(actorId)) {
+    showMsg('该武将已在队伍中', 'error');
+    return;
+  }
+  partyIds.push(actorId);
+  setPartyActorIds(partyIds);
+  renderPartyUI();
+  showMsg('已添加 ' + getActorName(actorId) + ' 到队伍', 'success');
+}
+
+function removeFromParty(actorId) {
+  let partyIds = getPartyActorIds();
+  partyIds = partyIds.filter(id => id !== actorId);
+  setPartyActorIds(partyIds);
+  renderPartyUI();
+  showMsg('已从队伍移除 ' + getActorName(actorId), 'success');
 }
 
 // localStorage key names - game uses Chinese format
@@ -437,6 +533,9 @@ function populateEditor() {
 
   // Variables
   renderVars();
+
+  // Party UI
+  renderPartyUI();
 }
 
 function renderActors() {
