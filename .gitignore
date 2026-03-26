@@ -1,0 +1,12 @@
+# Ignore everything by default
+*
+
+# But not these files/directories
+!data/
+!fonts/
+!js/
+!editor.html
+!index.html
+
+# Also keep these if they exist at root
+!.gitignore
