@@ -155,5 +155,6 @@ var $plugins =
 {"name":"TunshiEquipShow","status":true,"description":"神侯团队专制","parameters":{}},
 {"name":"MOG_ActorTurnIndicator","status":true,"description":"(v1.0)[v1.1]  战斗 - 角色选择光环(sv)","parameters":{"资源-光环":"ActorXZ","光环帧数":"4","动画播放速度":"5","偏移-光环 X":"0","偏移-光环 Y":"0","混合模式":"1","旋转速度":"0"}},
 {"name":"YEP_X_VisualStateFX","status":true,"description":"v1.02 (Req YEP_BattleEngineCore & YEP_BuffsStatesCore) Adds\nvisual effects to your states.","parameters":{"---Actors---":"","Actor State Overlay":"true","Actor State Icons":"false","Actor State Animation":"true","---Enemies---":"","Enemy State Overlay":"false","Enemy State Icons":"true","Enemy State Animation":"false","---Animation Settings---":"","Allow Target Flash":"true","Allow Screen Flash":"false","Allow Hide Target":"false","Allow Sound":"false"}},
-{"name":"YEP_FpsSynchOption","status":true,"description":"v1.03 Adds a new command to Options menu for synching\nthe FPS of moniters with higher FPS rates.","parameters":{"Command Name":"高刷60(慎开)","Default Setting":"false"}}
+{"name":"YEP_FpsSynchOption","status":true,"description":"v1.03 Adds a new command to Options menu for synching\\nthe FPS of moniters with higher FPS rates.","parameters":{"Command Name":"高刷60(慎开)","Default Setting":"false"}},
+{"name":"FixBattlePass","status":true,"description":"Fixes Battle Pass display name","parameters":{}}
 ];
