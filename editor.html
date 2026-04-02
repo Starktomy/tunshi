@@ -175,7 +175,7 @@ button:hover { opacity: 0.85; }
 <script src="js/libs/lz-string.js"></script>
 <script>
 // Game data (loaded from data/ folder)
-let gameData = { Items: [], Weapons: [], Armors: [], Actors: [] };
+let gameData = { Items: [], Weapons: [], Armors: [], Actors: [], System: null };
 let allActorsList = []; // All actors from Actors.json
 
 async function loadGameData() {
@@ -183,7 +183,8 @@ async function loadGameData() {
     { key: 'Items', src: 'data/Items.json' },
     { key: 'Weapons', src: 'data/Weapons.json' },
     { key: 'Armors', src: 'data/Armors.json' },
-    { key: 'Actors', src: 'data/Actors.json' }
+    { key: 'Actors', src: 'data/Actors.json' },
+    { key: 'System', src: 'data/System.json' }
   ];
   for (const f of files) {
     try {
@@ -784,28 +785,91 @@ function renderItems() {
 function renderVars() {
   const container = document.getElementById('varsList');
   container.innerHTML = '';
-  // RMMV variables serialized as: {"@c":80,"@a":[null,null,...,999999,...]}
   if (!currentSave.variables || !currentSave.variables._data || !currentSave.variables._data['@a']) {
     container.innerHTML = '<div class="no-data">无变量数据</div>'; return;
   }
 
-  // Show first 100 non-zero variables
+  // Quick Action Tools
+  const tools = document.createElement('div');
+  tools.className = 'actor-tools';
+  tools.style.cssText = 'margin-bottom: 15px; padding: 10px; background: #0f3460; border-radius: 6px;';
+  tools.innerHTML = `
+    <h3 style="color: #e94560; margin-bottom: 10px; font-size: 15px;">一键修改功能</h3>
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="maxResourceVars()">代币/资源全满 (肝令/钻石等)</button>
+      <button class="btn-secondary" onclick="minDifficultyVars()">副本/敌人强度降至最低</button>
+      <button class="btn-secondary" onclick="maxGemVars()">满级宝石全满</button>
+    </div>
+  `;
+  container.appendChild(tools);
+
+  const listContainer = document.createElement('div');
+  listContainer.className = 'item-list';
+  listContainer.style.maxHeight = '400px';
+
   const data = currentSave.variables._data['@a'];
+  const sysVars = gameData.System ? gameData.System.variables : [];
+  
   let shown = 0;
   data.forEach((val, idx) => {
-    if (val !== 0 && val !== null && shown < 100) {
+    if (idx === 0) return;
+    const name = sysVars[idx] ? sysVars[idx].trim() : '';
+    // Only show variables that have a name or non-zero value
+    if (name !== '' || (val !== 0 && val !== null)) {
       const div = document.createElement('div');
       div.className = 'var-row';
-      div.innerHTML = `<label>变量 ${idx}:</label>
-        <input id="var_${idx}" type="number" value="${val}">`;
-      container.appendChild(div);
+      div.innerHTML = `<label style="width: 160px;">[${idx}] ${name || '未知变量'}</label>
+        <input id="var_${idx}" type="number" value="${val || 0}">`;
+      listContainer.appendChild(div);
       shown++;
     }
   });
 
   if (shown === 0) {
-    container.innerHTML = '<div class="no-data">所有变量均为0</div>';
+    listContainer.innerHTML = '<div class="no-data">无可用变量</div>';
   }
+  container.appendChild(listContainer);
+}
+
+function maxResourceVars() {
+  if (!currentSave.variables || !currentSave.variables._data || !currentSave.variables._data['@a']) return;
+  const data = currentSave.variables._data['@a'];
+  // 108: 玄铁, 109: 黄金, 110: 钻石, 111-113: 小/大/肝帝令, 37/98/107: 精铁
+  const targetVars = [37, 98, 107, 108, 109, 110, 111, 112, 113, 138, 139, 140];
+  targetVars.forEach(idx => {
+    if (data[idx] !== undefined) data[idx] = 9999;
+  });
+  renderVars();
+  showMsg('代币与资源已全满！', 'success');
+}
+
+function minDifficultyVars() {
+  if (!currentSave.variables || !currentSave.variables._data || !currentSave.variables._data['@a']) return;
+  const data = currentSave.variables._data['@a'];
+  const sysVars = gameData.System ? gameData.System.variables : [];
+  
+  // Find variables containing '强度' or '增强'
+  sysVars.forEach((name, idx) => {
+    if (name && (name.includes('强度') || name.includes('增强'))) {
+      if (data[idx] !== undefined) {
+        data[idx] = 1; // Lower difficulty to 1
+      }
+    }
+  });
+  renderVars();
+  showMsg('副本与敌人强度已降至最低！', 'success');
+}
+
+function maxGemVars() {
+  if (!currentSave.variables || !currentSave.variables._data || !currentSave.variables._data['@a']) return;
+  const data = currentSave.variables._data['@a'];
+  // Level 5 gems (207, 213, 219, 225, 231, 237, 243, 249, 255)
+  const targetVars = [207, 213, 219, 225, 231, 237, 243, 249, 255];
+  targetVars.forEach(idx => {
+    if (data[idx] !== undefined) data[idx] = 99;
+  });
+  renderVars();
+  showMsg('五级顶级宝石已满！', 'success');
 }
 </script>
 </body>
