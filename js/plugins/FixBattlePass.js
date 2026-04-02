@@ -62,6 +62,18 @@
         activateAll();
     };
 
+    // 修复旧档案中装备槽位长度不一致导致部分装备栏缺失的bug
+    var _Game_Actor_equipSlots = Game_Actor.prototype.equipSlots;
+    Game_Actor.prototype.equipSlots = function() {
+        var slots = _Game_Actor_equipSlots.call(this);
+        if (this._equips) {
+            while (this._equips.length < slots.length) {
+                this._equips.push(new Game_Item());
+            }
+        }
+        return slots;
+    };
+
     function activateAll() {
         if ($gameSwitches) {
             $gameSwitches.setValue(101, true); // 通用激活
