@@ -152,6 +152,21 @@ button:hover { opacity: 0.85; }
     </div>
 
     <div id="tab-items" class="tab-content">
+      <div class="actor-tools" style="margin-bottom: 15px; padding: 10px; background: #0f3460; border-radius: 6px;">
+        <h3 style="color: #e94560; margin-bottom: 10px; font-size: 15px;">添加新物品/装备</h3>
+        <div class="row" style="margin-bottom: 5px;">
+          <select id="newItemType" onchange="updateNewItemOptions()" style="width: 100px;">
+            <option value="Items">道具</option>
+            <option value="Weapons">武器</option>
+            <option value="Armors">防具</option>
+          </select>
+          <select id="newItemSelect" style="flex: 1;">
+            <option value="">正在加载数据...</option>
+          </select>
+          <input id="newItemQty" type="number" min="1" max="999" value="1" style="width: 70px;">
+          <button class="btn-primary" onclick="addNewItem()">添加</button>
+        </div>
+      </div>
       <div id="itemsList"></div>
     </div>
 
@@ -556,6 +571,7 @@ function populateEditor() {
   renderActors();
 
   // Items
+  updateNewItemOptions();
   renderItems();
 
   // Variables
@@ -563,6 +579,54 @@ function populateEditor() {
 
   // Party UI
   renderPartyUI();
+}
+
+function updateNewItemOptions() {
+  const type = document.getElementById('newItemType').value;
+  const select = document.getElementById('newItemSelect');
+  select.innerHTML = '';
+  if (!gameData[type]) return;
+  const data = gameData[type];
+  for (let i = 1; i < data.length; i++) {
+    if (data[i] && data[i].name && data[i].name.trim() !== '') {
+      const opt = document.createElement('option');
+      opt.value = data[i].id;
+      opt.textContent = `${data[i].name} (ID: ${data[i].id})`;
+      select.appendChild(opt);
+    }
+  }
+}
+
+function addNewItem() {
+  if (!currentSave || !currentSave.party) {
+    showMsg('请先读取存档', 'error');
+    return;
+  }
+  const type = document.getElementById('newItemType').value;
+  const id = parseInt(document.getElementById('newItemSelect').value);
+  const qty = parseInt(document.getElementById('newItemQty').value) || 1;
+  
+  if (isNaN(id) || isNaN(qty) || qty <= 0) {
+    showMsg('请输入有效的数量', 'error');
+    return;
+  }
+  
+  let key = '';
+  if (type === 'Items') key = '_items';
+  else if (type === 'Weapons') key = '_weapons';
+  else if (type === 'Armors') key = '_armors';
+  
+  if (!currentSave.party[key]) {
+    let cid = type === 'Items' ? 12409 : type === 'Weapons' ? 12410 : 12411;
+    currentSave.party[key] = {"@c": cid};
+  }
+  
+  const currentQty = currentSave.party[key][id] || 0;
+  currentSave.party[key][id] = currentQty + qty;
+  
+  saveSave();
+  renderItems();
+  showMsg('已成功添加 ' + qty + ' 个 ' + getItemName(type, id), 'success');
 }
 
 function renderActors() {
