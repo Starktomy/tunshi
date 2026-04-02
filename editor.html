@@ -183,7 +183,7 @@ async function loadGameData() {
         // Build actor list from Actors.json
         allActorsList = [];
         for (let i = 1; i < json.length; i++) {
-          if (json[i]) {
+          if (json[i] && json[i].name && json[i].name.trim() !== '') {
             allActorsList.push({ id: json[i].id, name: json[i].name });
           }
         }
@@ -576,6 +576,7 @@ function renderActors() {
 
   actorArray.forEach((actor, idx) => {
     if (!actor || typeof actor !== 'object') return;
+    if (!actor._name || actor._name.trim() === '') return;
     const name = actor._name || ('Actor ' + actor._actorId);
     const level = actor._level || 1;
     const hp = actor._hp || 0;
