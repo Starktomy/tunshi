@@ -142,10 +142,6 @@ button:hover { opacity: 0.85; }
         </div>
         <div class="btn-row" style="margin-top: 10px;">
           <button class="btn-secondary" onclick="maxLevelAllActors()">全部满级</button>
-          <button class="btn-secondary" onclick="addAllGods()">添加全部神将</button>
-          <button class="btn-secondary" onclick="addGodToParty(1)">神刘备</button>
-          <button class="btn-secondary" onclick="addGodToParty(2)">神张飞</button>
-          <button class="btn-secondary" onclick="addGodToParty(3)">神关羽</button>
         </div>
       </div>
       <div id="actorsList"></div>
@@ -738,42 +734,6 @@ function maxLevelAllActors() {
   });
   renderActors();
   showMsg('全部武将已满级', 'success');
-}
-
-function addAllGods() {
-  // Add all gods to party: 1,2,3,6,8,5,16,17,18,21 (with 4 for 糜竺)
-  const godIds = [1, 2, 3, 4, 6, 8, 5, 16, 17, 18, 21];
-  const partyIds = getPartyActorIds();
-
-  let added = 0;
-  godIds.forEach(id => {
-    if (!partyIds.includes(id) && partyIds.length < 4) {
-      partyIds.push(id);
-      added++;
-    }
-  });
-
-  setPartyActorIds(partyIds);
-  renderActors();
-  renderPartyUI();
-  showMsg(`已添加 ${added} 名神将到队伍`, 'success');
-}
-
-function addGodToParty(actorId) {
-  const partyIds = getPartyActorIds();
-  if (partyIds.length >= 4) {
-    showMsg('队伍已满4人', 'error');
-    return;
-  }
-  if (partyIds.includes(actorId)) {
-    showMsg('该武将已在队伍中', 'error');
-    return;
-  }
-  partyIds.push(actorId);
-  setPartyActorIds(partyIds);
-  renderActors();
-  renderPartyUI();
-  showMsg('已添加 ' + getActorName(actorId) + ' 到队伍', 'success');
 }
 
 function renderItems() {
