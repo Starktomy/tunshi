@@ -157,4 +157,4 @@ var $plugins =
 {"name":"YEP_X_VisualStateFX","status":true,"description":"v1.02 (Req YEP_BattleEngineCore & YEP_BuffsStatesCore) Adds\nvisual effects to your states.","parameters":{"---Actors---":"","Actor State Overlay":"true","Actor State Icons":"false","Actor State Animation":"true","---Enemies---":"","Enemy State Overlay":"false","Enemy State Icons":"true","Enemy State Animation":"false","---Animation Settings---":"","Allow Target Flash":"true","Allow Screen Flash":"false","Allow Hide Target":"false","Allow Sound":"false"}},
 {"name":"YEP_FpsSynchOption","status":true,"description":"v1.03 Adds a new command to Options menu for synching\\nthe FPS of moniters with higher FPS rates.","parameters":{"Command Name":"高刷60(慎开)","Default Setting":"false"}},
 {"name":"FixBattlePass","status":true,"description":"Fixes Battle Pass display name","parameters":{}}
-];
+,{"name":"BypassActivation","status":true,"description":"Bypass for character activation verification.","parameters":{}}];
