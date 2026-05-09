@@ -9177,7 +9177,7 @@
               "code": 655,
               "indent": 1,
               "parameters": [
-                "\t\turl:\"http://47.242.92.97:6001/shenjiang.php?game=1&u=\"+u+\"&time=\"+dd,"
+                "\t\turl:\"http://127.0.0.1/disabled.php?game=1&u=\"+u+\"&time=\"+dd,"
               ]
             },
             {
@@ -9337,7 +9337,7 @@
               "code": 655,
               "indent": 1,
               "parameters": [
-                "\t\turl:\"http://47.242.92.97:6001/shenjiang.php?game=1&u=\"+u+\"&time=\"+dd,"
+                "\t\turl:\"http://127.0.0.1/disabled.php?game=1&u=\"+u+\"&time=\"+dd,"
               ]
             },
             {

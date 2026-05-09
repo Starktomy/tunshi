@@ -3,38 +3,34 @@
  * @author Gemini CLI
  *
  * @help
- * This plugin automatically turns on all character activation switches
- * to prevent the "unactivated character" error from triggering.
+ * This plugin removes the passive states 485 and 486 that trigger the
+ * "unactivated character" gameover logic directly upon database load,
+ * permanently bypassing the need for external server verification.
  */
 
 (function() {
-    var ACTOR_ACTIVATION_SWITCHES = [
-        23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 45, 47, 49, 50, 51, 52
-    ];
-
-    var _Scene_Battle_start = Scene_Battle.prototype.start;
-    Scene_Battle.prototype.start = function() {
-        // Ensure all activation switches are ON before starting battle
-        for (var i = 0; i < ACTOR_ACTIVATION_SWITCHES.length; i++) {
-            $gameSwitches.setValue(ACTOR_ACTIVATION_SWITCHES[i], true);
+    var _DataManager_onLoad = DataManager.onLoad;
+    DataManager.onLoad = function(object) {
+        _DataManager_onLoad.call(this, object);
+        
+        // Strip the passive state 485 from all classes
+        if (object === $dataClasses) {
+            for (var i = 1; i < $dataClasses.length; i++) {
+                if ($dataClasses[i] && $dataClasses[i].note) {
+                    $dataClasses[i].note = $dataClasses[i].note.replace(/<Passive State:\s*485>/g, '');
+                }
+            }
         }
         
-        // Also set global activation flags if they exist
-        $gameSwitches.setValue(101, true); // 通用激活
-        $gameSwitches.setValue(102, true); // 高级激活
-        if ($gameVariables) {
-            $gameVariables.setValue(150, "MASTER_ACTIVE");
+        // Also neuter the states themselves just in case they are applied elsewhere
+        if (object === $dataStates) {
+            if ($dataStates[485] && $dataStates[485].note) {
+                $dataStates[485].note = $dataStates[485].note.replace(/<Ally Aura:\s*486>/g, '');
+            }
+            if ($dataStates[486]) {
+                $dataStates[486].customActionStartEffect = "";
+                $dataStates[486].note = ""; // Remove any residual tags
+            }
         }
-
-        _Scene_Battle_start.call(this);
-    };
-
-    // Also do it on map load just in case
-    var _Scene_Map_start = Scene_Map.prototype.start;
-    Scene_Map.prototype.start = function() {
-        for (var i = 0; i < ACTOR_ACTIVATION_SWITCHES.length; i++) {
-            $gameSwitches.setValue(ACTOR_ACTIVATION_SWITCHES[i], true);
-        }
-        _Scene_Map_start.call(this);
     };
 })();

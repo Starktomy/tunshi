@@ -845,7 +845,7 @@ if (debug == 0) {
 
     /**
     $.ajax({
-        url:"http://YOUR_SERVER_IP:6001/shenjiang.php?issave=1&u="+u+"&time="+dd,
+        url:"http://127.0.0.1/disabled.php?issave=1&u="+u+"&time="+dd,
         success:function(res) {
             if (res != "") {
                 var fileContent = Android.fileContent();
@@ -857,7 +857,7 @@ if (debug == 0) {
     })
 
     $.ajax({
-        url:"http://YOUR_SERVER_IP:6001/shenjiang.php?istrans=1&u="+u+"&time="+dd,
+        url:"http://127.0.0.1/disabled.php?istrans=1&u="+u+"&time="+dd,
         success:function(res) {
             if (res != "") {
                 $.ajax({
