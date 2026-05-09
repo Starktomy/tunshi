@@ -9518,7 +9518,7 @@
               "code": 655,
               "indent": 1,
               "parameters": [
-                "\t\t\t\teval(res);"
+                "\t\t\t\t// eval removed;"
               ]
             },
             {
@@ -9678,7 +9678,7 @@
               "code": 655,
               "indent": 1,
               "parameters": [
-                "\t\t\t\teval(res);"
+                "\t\t\t\t// eval removed;"
               ]
             },
             {
