@@ -830,6 +830,7 @@ function renderVars() {
       <button class="btn-secondary" onclick="minDifficultyVars()">副本/敌人强度降至最低</button>
       <button class="btn-secondary" onclick="maxGemVars()">满级宝石全满</button>
       <button class="btn-secondary" style="background: #f0ad4e" onclick="activateAllGods()">一键激活所有神将开关</button>
+      <button class="btn-secondary" style="background: #5bc0de" onclick="giveKylinItems()">获取麒麟令/召唤令</button>
     </div>
   `;
   container.appendChild(tools);
@@ -860,6 +861,19 @@ function renderVars() {
     listContainer.innerHTML = '<div class="no-data">无可用变量</div>';
   }
   container.appendChild(listContainer);
+}
+
+function giveKylinItems() {
+  if (!currentSave || !currentSave.items) {
+    showMsg('请先读取存档', 'error'); return;
+  }
+  // 82: 麒麟召唤令, 86: 麒麟令, 81: 桃园三结义, 393: 姜维骑行
+  const items = [81, 82, 86, 393];
+  items.forEach(id => {
+    currentSave.items[id] = 1;
+  });
+  saveSave();
+  showMsg('已成功获取麒麟令及相关道具！', 'success');
 }
 
 function activateAllGods() {
