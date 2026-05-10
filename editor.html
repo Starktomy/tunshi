@@ -833,19 +833,6 @@ function renderVars() {
   listContainer.style.maxHeight = '400px';
 
   const data = currentSave.variables._data['@a'];
-...
-function activateAllGods() {
-  if (!currentSave.switches || !currentSave.switches._data || !currentSave.switches._data['@a']) {
-    showMsg('存档数据不完整', 'error'); return;
-  }
-  const data = currentSave.switches._data['@a'];
-  // 467-500: Activation switches for generals
-  for (let i = 467; i <= 500; i++) {
-    data[i] = true;
-  }
-  saveSave();
-  showMsg('已成功激活所有神将开关！', 'success');
-}
   const sysVars = gameData.System ? gameData.System.variables : [];
   
   let shown = 0;
@@ -867,6 +854,19 @@ function activateAllGods() {
     listContainer.innerHTML = '<div class="no-data">无可用变量</div>';
   }
   container.appendChild(listContainer);
+}
+
+function activateAllGods() {
+  if (!currentSave.switches || !currentSave.switches._data || !currentSave.switches._data['@a']) {
+    showMsg('存档数据不完整', 'error'); return;
+  }
+  const data = currentSave.switches._data['@a'];
+  // 467-500: Activation switches for generals
+  for (let i = 467; i <= 500; i++) {
+    data[i] = true;
+  }
+  saveSave();
+  showMsg('已成功激活所有神将开关！', 'success');
 }
 
 function maxResourceVars() {
