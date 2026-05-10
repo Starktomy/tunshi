@@ -697,23 +697,29 @@ function godifyActor(idx) {
   if (!actor) return;
 
   const godConfig = {
-    1: { name: '神刘备', classId: 151 },
-    2: { name: '神张飞', classId: 153 },
-    3: { name: '神关羽', classId: 155 },
-    4: { name: '神糜竺', classId: 156 },
-    5: { name: '神吕布', classId: 158 },
-    8: { name: '神赵云', classId: 186 },
-    16: { name: '神徐庶', classId: 187 },
-    6: { name: '神貂蝉', classId: actor._classId } // 貂蝉通常不改职业
+    1: { name: '神刘备', classId: 151, switchId: 23 },
+    2: { name: '神张飞', classId: 153, switchId: 25 },
+    3: { name: '神关羽', classId: 155, switchId: 24 },
+    4: { name: '神糜竺', classId: 156, switchId: 40 },
+    5: { name: '神吕布', classId: 158, switchId: 26 },
+    8: { name: '神赵云', classId: 186, switchId: 27 },
+    16: { name: '神徐庶', classId: 187, switchId: 55 },
+    6: { name: '神貂蝉', classId: actor._classId, switchId: 28 }
   };
 
   const config = godConfig[actor._actorId];
   if (config) {
     actor._name = config.name;
     actor._classId = config.classId;
-    saveSave();
-    renderActors();
-    showMsg('已成功将 ' + config.name + ' 晋升为神将', 'success');
+    
+    // Activate switch
+    if (currentSave.switches && currentSave.switches._data && currentSave.switches._data['@a']) {
+      currentSave.switches._data['@a'][config.switchId] = true;
+    }
+
+    renderActors(); // Refresh UI first
+    saveSave();     // Then save to localStorage
+    showMsg('已成功将 ' + config.name + ' 晋升为神将并开启激活开关', 'success');
   } else {
     showMsg('该角色暂无神将配置', 'error');
   }
@@ -739,8 +745,8 @@ function maxLevelActor(idx) {
     actor._paramPlus['@a'][7] = 9999; // LUK
   }
 
-  saveSave();
   renderActors();
+  saveSave();
   showMsg('武将已强化满级', 'success');
 }
 
@@ -756,8 +762,8 @@ function maxLevelAllActors() {
       for(let i=2; i<=7; i++) actor._paramPlus['@a'][i] = 9999;
     }
   });
-  saveSave();
   renderActors();
+  saveSave();
   showMsg('全部武将已强化满级', 'success');
 }
 
@@ -861,8 +867,8 @@ function activateAllGods() {
     showMsg('存档数据不完整', 'error'); return;
   }
   const data = currentSave.switches._data['@a'];
-  // 467-500: Activation switches for generals
-  for (let i = 467; i <= 500; i++) {
+  // 23-60: Activation switches for generals
+  for (let i = 23; i <= 60; i++) {
     data[i] = true;
   }
   saveSave();
