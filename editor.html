@@ -266,8 +266,8 @@ function renderPartyUI() {
 
 function addToParty(actorId) {
   const partyIds = getPartyActorIds();
-  if (partyIds.length >= 4) {
-    showMsg('队伍最多4人', 'error');
+  if (partyIds.length >= 10) {
+    showMsg('队伍最多10人', 'error');
     return;
   }
   if (partyIds.includes(actorId)) {
@@ -367,6 +367,8 @@ function saveSave() {
     if (actorArray) {
       actorArray.forEach((actor, idx) => {
         if (!actor || typeof actor !== 'object') return;
+        const name = document.getElementById('actor_name_' + idx);
+        const classId = document.getElementById('actor_class_' + idx);
         const hp = document.getElementById('actor_hp_' + idx);
         const mp = document.getElementById('actor_mp_' + idx);
         const atk = document.getElementById('actor_atk_' + idx);
@@ -376,6 +378,9 @@ function saveSave() {
         const agi = document.getElementById('actor_agi_' + idx);
         const luk = document.getElementById('actor_luk_' + idx);
         const level = document.getElementById('actor_level_' + idx);
+
+        if (name) actor._name = name.value;
+        if (classId) actor._classId = parseInt(classId.value) || actor._classId;
         if (hp) actor._hp = Math.max(0, parseInt(hp.value) || 0);
         if (mp) actor._mp = Math.max(0, parseInt(mp.value) || 0);
         if (actor._paramPlus && actor._paramPlus['@a']) {
@@ -387,7 +392,7 @@ function saveSave() {
           if (luk) actor._paramPlus['@a'][7] = Math.max(0, parseInt(luk.value) || 0);
         }
         if (level) {
-          actor._level = Math.max(1, Math.min(99, parseInt(level.value) || 1));
+          actor._level = Math.max(1, Math.min(255, parseInt(level.value) || 1));
         }
       });
     }
@@ -642,6 +647,7 @@ function renderActors() {
     const level = actor._level || 1;
     const hp = actor._hp || 0;
     const mp = actor._mp || 0;
+    const classId = actor._classId || 0;
     const isInParty = partyIds.includes(actor._actorId);
     // paramPlus is stored as {"@c":...,"@a":[0,0,atk,def,mat,mdf,agi,luk,...]} - indices 2-7
     const paramPlusArr = actor._paramPlus && actor._paramPlus['@a'] ? actor._paramPlus['@a'] : [];
@@ -652,18 +658,22 @@ function renderActors() {
     const agi = paramPlusArr[6] || 0;
     const luk = paramPlusArr[7] || 0;
 
+    const isGodifyable = [1,2,3,4,5,6,8,16].includes(actor._actorId);
+
     const div = document.createElement('div');
     div.className = 'actor-card';
     div.id = 'actor_card_' + actor._actorId;
     div.innerHTML = `
       <h3>
-        <span>${name} (ID: ${actor._actorId} | 等级: ${level})</span>
+        <input id="actor_name_${idx}" type="text" value="${name}" style="background:transparent;border:none;color:#fff;font-weight:bold;width:120px;">
+        <span style="font-size:12px;color:#888;">(ID: ${actor._actorId})</span>
         <span class="${isInParty ? 'in-party' : 'not-in-party'}">${isInParty ? '在队中' : '待入队'}</span>
       </h3>
       <div class="actor-stats">
         <div class="stat"><label>HP:</label><input id="actor_hp_${idx}" type="number" value="${hp}" min="0"></div>
         <div class="stat"><label>MP:</label><input id="actor_mp_${idx}" type="number" value="${mp}" min="0"></div>
-        <div class="stat"><label>等级:</label><input id="actor_level_${idx}" type="number" value="${level}" min="1" max="99"></div>
+        <div class="stat"><label>等级:</label><input id="actor_level_${idx}" type="number" value="${level}" min="1" max="255"></div>
+        <div class="stat"><label>职业ID:</label><input id="actor_class_${idx}" type="number" value="${classId}" min="0"></div>
         <div class="stat"><label>ATK:</label><input id="actor_atk_${idx}" type="number" value="${atk}" min="0"></div>
         <div class="stat"><label>DEF:</label><input id="actor_def_${idx}" type="number" value="${def}" min="0"></div>
         <div class="stat"><label>MAT:</label><input id="actor_mat_${idx}" type="number" value="${mat}" min="0"></div>
@@ -672,24 +682,41 @@ function renderActors() {
         <div class="stat"><label>LUK:</label><input id="actor_luk_${idx}" type="number" value="${luk}" min="0"></div>
       </div>
       <div class="actor-actions">
-        <button class="btn-secondary" onclick="maxLevelActor(${idx})">满级</button>
+        <button class="btn-secondary" onclick="maxLevelActor(${idx})">满级/强力</button>
+        ${isGodifyable ? `<button class="btn-secondary" style="background: #f0ad4e" onclick="godifyActor(${idx})">晋升神将</button>` : ''}
         ${isInParty ? `<button class="btn-danger" onclick="removeFromParty(${actor._actorId})">移出队伍</button>` : `<button class="btn-primary" onclick="addToParty(${actor._actorId})">加入队伍</button>`}
       </div>`;
     container.appendChild(div);
   });
 }
 
-function filterActors() {
-  const search = document.getElementById('actorSearch').value.toLowerCase();
-  const cards = document.querySelectorAll('.actor-card');
-  cards.forEach(card => {
-    const name = card.querySelector('h3 span').textContent.toLowerCase();
-    if (name.includes(search) || search === '') {
-      card.classList.remove('hidden-actor');
-    } else {
-      card.classList.add('hidden-actor');
-    }
-  });
+function godifyActor(idx) {
+  if (!currentSave.actors || !currentSave.actors._data || !currentSave.actors._data['@a']) return;
+  const actorArray = currentSave.actors._data['@a'];
+  const actor = actorArray[idx];
+  if (!actor) return;
+
+  const godConfig = {
+    1: { name: '神刘备', classId: 151 },
+    2: { name: '神张飞', classId: 153 },
+    3: { name: '神关羽', classId: 155 },
+    4: { name: '神糜竺', classId: 156 },
+    5: { name: '神吕布', classId: 158 },
+    8: { name: '神赵云', classId: 186 },
+    16: { name: '神徐庶', classId: 187 },
+    6: { name: '神貂蝉', classId: actor._classId } // 貂蝉通常不改职业
+  };
+
+  const config = godConfig[actor._actorId];
+  if (config) {
+    actor._name = config.name;
+    actor._classId = config.classId;
+    saveSave();
+    renderActors();
+    showMsg('已成功将 ' + config.name + ' 晋升为神将', 'success');
+  } else {
+    showMsg('该角色暂无神将配置', 'error');
+  }
 }
 
 function maxLevelActor(idx) {
@@ -698,43 +725,40 @@ function maxLevelActor(idx) {
   const actor = actorArray[idx];
   if (!actor) return;
 
-  actor._level = 99;
-  actor._hp = 9999;
+  actor._level = 255;
+  actor._hp = 99999;
   actor._mp = 9999;
 
-  // Set all stats to max
+  // Set all stats to very high
   if (actor._paramPlus && actor._paramPlus['@a']) {
-    actor._paramPlus['@a'][2] = 999; // ATK
-    actor._paramPlus['@a'][3] = 999; // DEF
-    actor._paramPlus['@a'][4] = 999; // MAT
-    actor._paramPlus['@a'][5] = 999; // MDF
-    actor._paramPlus['@a'][6] = 999; // AGI
-    actor._paramPlus['@a'][7] = 999; // LUK
+    actor._paramPlus['@a'][2] = 9999; // ATK
+    actor._paramPlus['@a'][3] = 9999; // DEF
+    actor._paramPlus['@a'][4] = 9999; // MAT
+    actor._paramPlus['@a'][5] = 9999; // MDF
+    actor._paramPlus['@a'][6] = 9999; // AGI
+    actor._paramPlus['@a'][7] = 9999; // LUK
   }
 
+  saveSave();
   renderActors();
-  showMsg('武将已满级', 'success');
+  showMsg('武将已强化满级', 'success');
 }
 
 function maxLevelAllActors() {
   if (!currentSave.actors || !currentSave.actors._data || !currentSave.actors._data['@a']) return;
   const actorArray = currentSave.actors._data['@a'];
   actorArray.forEach((actor, idx) => {
-    if (!actor || typeof actor !== 'object') return;
-    actor._level = 99;
-    actor._hp = 9999;
+    if (!actor || typeof actor !== 'object' || !actor._name) return;
+    actor._level = 255;
+    actor._hp = 99999;
     actor._mp = 9999;
     if (actor._paramPlus && actor._paramPlus['@a']) {
-      actor._paramPlus['@a'][2] = 999;
-      actor._paramPlus['@a'][3] = 999;
-      actor._paramPlus['@a'][4] = 999;
-      actor._paramPlus['@a'][5] = 999;
-      actor._paramPlus['@a'][6] = 999;
-      actor._paramPlus['@a'][7] = 999;
+      for(let i=2; i<=7; i++) actor._paramPlus['@a'][i] = 9999;
     }
   });
+  saveSave();
   renderActors();
-  showMsg('全部武将已满级', 'success');
+  showMsg('全部武将已强化满级', 'success');
 }
 
 function renderItems() {
@@ -799,6 +823,7 @@ function renderVars() {
       <button class="btn-secondary" onclick="maxResourceVars()">代币/资源全满 (肝令/钻石等)</button>
       <button class="btn-secondary" onclick="minDifficultyVars()">副本/敌人强度降至最低</button>
       <button class="btn-secondary" onclick="maxGemVars()">满级宝石全满</button>
+      <button class="btn-secondary" style="background: #f0ad4e" onclick="activateAllGods()">一键激活所有神将开关</button>
     </div>
   `;
   container.appendChild(tools);
@@ -808,6 +833,19 @@ function renderVars() {
   listContainer.style.maxHeight = '400px';
 
   const data = currentSave.variables._data['@a'];
+...
+function activateAllGods() {
+  if (!currentSave.switches || !currentSave.switches._data || !currentSave.switches._data['@a']) {
+    showMsg('存档数据不完整', 'error'); return;
+  }
+  const data = currentSave.switches._data['@a'];
+  // 467-500: Activation switches for generals
+  for (let i = 467; i <= 500; i++) {
+    data[i] = true;
+  }
+  saveSave();
+  showMsg('已成功激活所有神将开关！', 'success');
+}
   const sysVars = gameData.System ? gameData.System.variables : [];
   
   let shown = 0;

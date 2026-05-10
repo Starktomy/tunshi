@@ -4813,7 +4813,7 @@ Game_Party.prototype.battleMembers = function() {
 };
 
 Game_Party.prototype.maxBattleMembers = function() {
-    return 4;
+    return 10;
 };
 
 Game_Party.prototype.leader = function() {
