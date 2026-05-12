@@ -704,7 +704,7 @@ function godifyActor(idx) {
     5: { name: '神吕布', classId: 158, switchId: 26 },
     8: { name: '神赵云', classId: 186, switchId: 27 },
     16: { name: '神徐庶', classId: 187, switchId: 55 },
-    6: { name: '神貂蝉', classId: actor._classId, switchId: 28 }
+    6: { name: '神貂蝉', classId: 6, switchId: 28 } // Use regular Diao Chan class which I've upgraded
   };
 
   const config = godConfig[actor._actorId];
@@ -734,20 +734,21 @@ function maxLevelActor(idx) {
   actor._level = 255;
   actor._hp = 99999;
   actor._mp = 9999;
+  
+  // Ensure _exp exists and set high value to prevent NaN
+  if (!actor._exp) actor._exp = {"@c": "Object"};
+  actor._exp[actor._classId] = 100000000;
 
   // Set all stats to very high
   if (actor._paramPlus && actor._paramPlus['@a']) {
-    actor._paramPlus['@a'][2] = 9999; // ATK
-    actor._paramPlus['@a'][3] = 9999; // DEF
-    actor._paramPlus['@a'][4] = 9999; // MAT
-    actor._paramPlus['@a'][5] = 9999; // MDF
-    actor._paramPlus['@a'][6] = 9999; // AGI
-    actor._paramPlus['@a'][7] = 9999; // LUK
+    for(let i=0; i<8; i++) {
+        actor._paramPlus['@a'][i] = 9999;
+    }
   }
 
   renderActors();
   saveSave();
-  showMsg('武将已强化满级', 'success');
+  showMsg('武将已强化满级（已兼容突破上限）', 'success');
 }
 
 function maxLevelAllActors() {
@@ -758,8 +759,10 @@ function maxLevelAllActors() {
     actor._level = 255;
     actor._hp = 99999;
     actor._mp = 9999;
+    if (!actor._exp) actor._exp = {"@c": "Object"};
+    actor._exp[actor._classId] = 100000000;
     if (actor._paramPlus && actor._paramPlus['@a']) {
-      for(let i=2; i<=7; i++) actor._paramPlus['@a'][i] = 9999;
+      for(let i=0; i<8; i++) actor._paramPlus['@a'][i] = 9999;
     }
   });
   renderActors();
