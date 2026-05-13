@@ -266,8 +266,8 @@ function renderPartyUI() {
 
 function addToParty(actorId) {
   const partyIds = getPartyActorIds();
-  if (partyIds.length >= 10) {
-    showMsg('队伍最多10人', 'error');
+  if (partyIds.length >= 5) {
+    showMsg('队伍最多5人', 'error');
     return;
   }
   if (partyIds.includes(actorId)) {
