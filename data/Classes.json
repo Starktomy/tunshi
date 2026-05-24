@@ -87812,21 +87812,6 @@
         "skillId": 2
       },
       {
-        "level": 30,
-        "note": "",
-        "skillId": 151
-      },
-      {
-        "level": 40,
-        "note": "",
-        "skillId": 152
-      },
-      {
-        "level": 50,
-        "note": "",
-        "skillId": 153
-      },
-      {
         "level": 20,
         "note": "",
         "skillId": 391
@@ -87837,9 +87822,39 @@
         "skillId": 392
       },
       {
+        "level": 30,
+        "note": "",
+        "skillId": 151
+      },
+      {
         "level": 35,
         "note": "",
         "skillId": 393
+      },
+      {
+        "level": 40,
+        "note": "",
+        "skillId": 152
+      },
+      {
+        "level": 45,
+        "note": "",
+        "skillId": 390
+      },
+      {
+        "level": 50,
+        "note": "",
+        "skillId": 153
+      },
+      {
+        "level": 55,
+        "note": "",
+        "skillId": 383
+      },
+      {
+        "level": 65,
+        "note": "",
+        "skillId": 408
       }
     ],
     "name": "奉义将军",
@@ -507628,8 +507643,64 @@
         "value": 0
       }
     ],
-    "learnings": [],
-    "name": "1",
+    "learnings": [
+      {
+        "level": 1,
+        "note": "",
+        "skillId": 1
+      },
+      {
+        "level": 1,
+        "note": "",
+        "skillId": 2
+      },
+      {
+        "level": 20,
+        "note": "",
+        "skillId": 391
+      },
+      {
+        "level": 25,
+        "note": "",
+        "skillId": 392
+      },
+      {
+        "level": 30,
+        "note": "",
+        "skillId": 151
+      },
+      {
+        "level": 35,
+        "note": "",
+        "skillId": 393
+      },
+      {
+        "level": 40,
+        "note": "",
+        "skillId": 152
+      },
+      {
+        "level": 45,
+        "note": "",
+        "skillId": 390
+      },
+      {
+        "level": 50,
+        "note": "",
+        "skillId": 153
+      },
+      {
+        "level": 55,
+        "note": "",
+        "skillId": 383
+      },
+      {
+        "level": 65,
+        "note": "",
+        "skillId": 408
+      }
+    ],
+    "name": "幻姜维",
     "note": "<Equip Slot>\n武器\n武器\n防具\n防具\n鞋子\n鞋子\n坐骑\n坐骑\n饰品\n饰品\n头戴\n披风\n盾牌\n</Equip Slot>\n<Passive State: 21>\n<Passive State: 485>",
     "params": [
       [
