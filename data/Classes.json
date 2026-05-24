@@ -155249,6 +155249,11 @@
         "level": 60,
         "note": "",
         "skillId": 842
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 790
       }
     ],
     "name": "神刘备",
@@ -157805,6 +157810,16 @@
         "level": 60,
         "note": "",
         "skillId": 843
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 472
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 119
       }
     ],
     "name": "神关羽",
@@ -160331,6 +160346,21 @@
         "level": 60,
         "note": "",
         "skillId": 850
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 253
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 255
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 831
       }
     ],
     "name": "神张飞",
@@ -170540,6 +170570,16 @@
         "level": 60,
         "note": "",
         "skillId": 849
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 196
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 321
       }
     ],
     "name": "神诸葛亮",
@@ -376144,8 +376184,74 @@
         "value": 0
       }
     ],
-    "learnings": [],
-    "name": "",
+    "learnings": [
+      {
+        "level": 1,
+        "note": "",
+        "skillId": 1
+      },
+      {
+        "level": 1,
+        "note": "",
+        "skillId": 2
+      },
+      {
+        "level": 10,
+        "note": "",
+        "skillId": 146
+      },
+      {
+        "level": 20,
+        "note": "",
+        "skillId": 150
+      },
+      {
+        "level": 30,
+        "note": "",
+        "skillId": 767
+      },
+      {
+        "level": 40,
+        "note": "",
+        "skillId": 768
+      },
+      {
+        "level": 45,
+        "note": "",
+        "skillId": 769
+      },
+      {
+        "level": 50,
+        "note": "",
+        "skillId": 771
+      },
+      {
+        "level": 55,
+        "note": "",
+        "skillId": 772
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 773
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 774
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 775
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 776
+      }
+    ],
+    "name": "神庞统",
     "note": "",
     "params": [
       [
@@ -381110,8 +381216,59 @@
         "value": 0
       }
     ],
-    "learnings": [],
-    "name": "",
+    "learnings": [
+      {
+        "level": 1,
+        "note": "",
+        "skillId": 1
+      },
+      {
+        "level": 1,
+        "note": "",
+        "skillId": 2
+      },
+      {
+        "level": 10,
+        "note": "",
+        "skillId": 226
+      },
+      {
+        "level": 20,
+        "note": "",
+        "skillId": 227
+      },
+      {
+        "level": 30,
+        "note": "",
+        "skillId": 228
+      },
+      {
+        "level": 40,
+        "note": "",
+        "skillId": 229
+      },
+      {
+        "level": 50,
+        "note": "",
+        "skillId": 232
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 233
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 230
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 231
+      }
+    ],
+    "name": "神黄忠",
     "note": "",
     "params": [
       [
@@ -391141,12 +391298,22 @@
       {
         "level": 60,
         "note": "",
+        "skillId": 846
+      },
+      {
+        "level": 60,
+        "note": "",
         "skillId": 827
       },
       {
         "level": 60,
         "note": "",
-        "skillId": 846
+        "skillId": 88
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 835
       }
     ],
     "name": "神吕布",
@@ -396153,6 +396320,16 @@
         "level": 60,
         "note": "",
         "skillId": 824
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 495
+      },
+      {
+        "level": 60,
+        "note": "",
+        "skillId": 496
       }
     ],
     "name": "神貂蝉",

@@ -694,10 +694,15 @@ function giveGodSkillBooks() {
   if (!currentSave.party._items) {
     currentSave.party._items = {"@c": 12409};
   }
-  // IDs 239-247 are the fixed God Skill Books
+  // IDs 239-247 are the core God Skill Books
   for (let id = 239; id <= 247; id++) {
     currentSave.party._items[id] = (currentSave.party._items[id] || 0) + 1;
   }
+  // Additional fixed/new books: 500 (Leifa), 421 (Huangzhong), 422 (Pangtong), 423 (Machao), 424 (Wusheng), 425 (Dangyang)
+  const extraIds = [500, 421, 422, 423, 424, 425];
+  extraIds.forEach(id => {
+    currentSave.party._items[id] = (currentSave.party._items[id] || 0) + 1;
+  });
   saveSave();
   renderItems();
   showMsg('已获得全套神将技能书！', 'success');
@@ -778,7 +783,9 @@ function godifyActor(idx) {
     16: { name: '神徐庶', classId: 68, switchId: 55 },
     17: { name: '神诸葛亮', classId: 69, switchId: 56 },
     6: { name: '神貂蝉', classId: 160, switchId: 28 },
-    25: { name: '神马超', classId: 149, switchId: 57 }
+    25: { name: '神马超', classId: 149, switchId: 57 },
+    18: { name: '神黄忠', classId: 154, switchId: 58 },
+    21: { name: '神庞统', classId: 152, switchId: 59 }
   };
 
   const config = godConfig[actor._actorId];

@@ -32494,8 +32494,8 @@
   },
   {
     "id": 421,
-    "animationId": 0,
-    "consumable": true,
+    "animationId": 14,
+    "consumable": false,
     "damage": {
       "critical": false,
       "elementId": 0,
@@ -32503,25 +32503,32 @@
       "type": 0,
       "variance": 20
     },
-    "description": "",
-    "effects": [],
+    "description": "神黄忠6回合力量3倍。冷却3回合。",
+    "effects": [
+      {
+        "code": 44,
+        "dataId": 233,
+        "value1": 1,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
-    "iconIndex": 0,
-    "itypeId": 1,
-    "name": "",
-    "note": "",
-    "occasion": 0,
+    "iconIndex": 421,
+    "itypeId": 2,
+    "name": "二石之力书",
+    "note": "<Text Color: 4>\n<Cannot Sell>",
+    "occasion": 2,
     "price": 0,
     "repeats": 1,
-    "scope": 7,
+    "scope": 0,
     "speed": 0,
     "successRate": 100,
     "tpGain": 0
   },
   {
     "id": 422,
-    "animationId": 0,
-    "consumable": true,
+    "animationId": 14,
+    "consumable": false,
     "damage": {
       "critical": false,
       "elementId": 0,
@@ -32529,25 +32536,32 @@
       "type": 0,
       "variance": 20
     },
-    "description": "",
-    "effects": [],
+    "description": "神庞统全队暴击+100%，愤怒+100%，持续两回合。冷却8回合。",
+    "effects": [
+      {
+        "code": 44,
+        "dataId": 773,
+        "value1": 1,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
-    "iconIndex": 0,
-    "itypeId": 1,
-    "name": "",
-    "note": "",
-    "occasion": 0,
+    "iconIndex": 421,
+    "itypeId": 2,
+    "name": "落凤之殇书",
+    "note": "<Text Color: 4>\n<Cannot Sell>",
+    "occasion": 2,
     "price": 0,
     "repeats": 1,
-    "scope": 7,
+    "scope": 0,
     "speed": 0,
     "successRate": 100,
     "tpGain": 0
   },
   {
     "id": 423,
-    "animationId": 0,
-    "consumable": true,
+    "animationId": 14,
+    "consumable": false,
     "damage": {
       "critical": false,
       "elementId": 0,
@@ -32555,25 +32569,32 @@
       "type": 0,
       "variance": 20
     },
-    "description": "",
-    "effects": [],
+    "description": "神马超6回合力量3倍，物防1.5倍，暴击伤害+100%，暴击率+200%。",
+    "effects": [
+      {
+        "code": 44,
+        "dataId": 856,
+        "value1": 1,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
-    "iconIndex": 0,
-    "itypeId": 1,
-    "name": "",
-    "note": "",
-    "occasion": 0,
+    "iconIndex": 421,
+    "itypeId": 2,
+    "name": "誓死复仇书",
+    "note": "<Text Color: 4>\n<Cannot Sell>",
+    "occasion": 2,
     "price": 0,
     "repeats": 1,
-    "scope": 7,
+    "scope": 0,
     "speed": 0,
     "successRate": 100,
     "tpGain": 0
   },
   {
     "id": 424,
-    "animationId": 0,
-    "consumable": true,
+    "animationId": 14,
+    "consumable": false,
     "damage": {
       "critical": false,
       "elementId": 0,
@@ -32581,25 +32602,32 @@
       "type": 0,
       "variance": 20
     },
-    "description": "",
-    "effects": [],
+    "description": "关羽武圣，全队伤害数值+200%，持续3回合。",
+    "effects": [
+      {
+        "code": 44,
+        "dataId": 760,
+        "value1": 1,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
-    "iconIndex": 0,
-    "itypeId": 1,
-    "name": "",
-    "note": "",
-    "occasion": 0,
+    "iconIndex": 421,
+    "itypeId": 2,
+    "name": "武圣计书",
+    "note": "<Text Color: 4>\n<Cannot Sell>",
+    "occasion": 2,
     "price": 0,
     "repeats": 1,
-    "scope": 7,
+    "scope": 0,
     "speed": 0,
     "successRate": 100,
     "tpGain": 0
   },
   {
     "id": 425,
-    "animationId": 0,
-    "consumable": true,
+    "animationId": 14,
+    "consumable": false,
     "damage": {
       "critical": false,
       "elementId": 0,
@@ -32607,17 +32635,24 @@
       "type": 0,
       "variance": 20
     },
-    "description": "",
-    "effects": [],
+    "description": "张飞怒吼，降低敌人全体20%属性，大概率眩晕。",
+    "effects": [
+      {
+        "code": 44,
+        "dataId": 255,
+        "value1": 1,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
-    "iconIndex": 0,
-    "itypeId": 1,
-    "name": "",
-    "note": "",
-    "occasion": 0,
+    "iconIndex": 421,
+    "itypeId": 2,
+    "name": "当阳吼书",
+    "note": "<Text Color: 4>\n<Cannot Sell>",
+    "occasion": 2,
     "price": 0,
     "repeats": 1,
-    "scope": 7,
+    "scope": 0,
     "speed": 0,
     "successRate": 100,
     "tpGain": 0
@@ -34549,7 +34584,7 @@
   {
     "id": 500,
     "animationId": 3,
-    "consumable": true,
+    "consumable": false,
     "damage": {
       "critical": true,
       "elementId": 0,
@@ -34558,7 +34593,14 @@
       "variance": 20
     },
     "description": "全体攻击。风、雷混合系法术。\n概率附加失明、混乱状态。法术3连。(计策，天算可学习)",
-    "effects": [],
+    "effects": [
+      {
+        "code": 44,
+        "dataId": 762,
+        "value1": 1,
+        "value2": 0
+      }
+    ],
     "hitType": 1,
     "iconIndex": 281,
     "itypeId": 2,
